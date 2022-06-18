@@ -11,6 +11,7 @@ const App = () => {
 	const [username, setUsername] = useState('')
 	const [userInput, setUserInput] = useState('')
 	const [opponentName, setOpponentName] = useState('')
+	const [fullGame, setFullGame] = useState(false)
 
 	const handleUsernameSubmit = e => {
 		e.preventDefault()
@@ -25,6 +26,12 @@ const App = () => {
 			setOpponentName(username)
 		})
 		console.log(username)
+
+		socket.on('game:full', (boolean, playersArray) => {
+			setFullGame(boolean)
+			setUsername(playersArray.length)
+		})
+
 	}, [username])
 
 	return (
@@ -52,6 +59,12 @@ const App = () => {
 							<button type='submit'>Start Game</button>
 						</div>
 					</form>
+				</div>
+			)}
+
+			{fullGame && username === 0 && (
+				<div>
+					<h2>Game Full</h2>
 				</div>
 			)}
 		</div>
