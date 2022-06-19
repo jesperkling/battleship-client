@@ -9,20 +9,27 @@ const socket = socketio.connect(process.env.REACT_APP_SOCKET_URL)
 const App = () => {
 	const [username, setUsername] = useState('')
 	const [userInput, setUserInput] = useState('')
-	const [opponentName, setOpponentName] = useState('')
+
+	const [user, setUser] = useState('')
+	const [opponent, setOpponent] = useState('')
 	const [fullGame, setFullGame] = useState(false)
 
 	const handleUsernameSubmit = (e) => {
 		e.preventDefault()
 		setUsername(userInput)
-		socket.emit('player:username', userInput)
+		socket.emit('player:joined', userInput)
 		setUserInput('')
-		socket.emit('user:joined', username)
 	}
 
 	useEffect(() => {
-		socket.on('username', function (username) {
-			setOpponentName(username)
+		socket.on('player:profile', function (players) {
+			if (players.length === 2) {
+				const thisSocket = players.find((player) => player.id === socket.id)
+				const otherSocket = players.find((player) => player.id !== socket.id)
+
+				setUser(thisSocket)
+				setOpponent(otherSocket)
+			}
 		})
 
 		socket.on('game:full', (boolean, playersArray) => {
@@ -30,7 +37,7 @@ const App = () => {
 			setUsername(playersArray.length)
 		})
 
-	}, [username])
+	}, [opponent, user, username])
 
 	return (
 		<div>
@@ -39,8 +46,9 @@ const App = () => {
 			{username ? ( 
 				<GameBoard 
 					socket={socket} 
+					user={user}
 					username={username}
-					opponentName={opponentName}
+					opponentName={opponent}
 				/>
 			) : (
 				<StartPage 
