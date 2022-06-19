@@ -1,8 +1,8 @@
+import './StartPage.scss'
+
 const StartPage = ({ onHandleUsernameSubmit, userInput, setUserInput }) => {
 	return (
 	<div className="start-page">
-		<h2>Battleship Game</h2>
-
 		<form onSubmit={onHandleUsernameSubmit}>
 			<div>
 				<input
@@ -13,7 +13,9 @@ const StartPage = ({ onHandleUsernameSubmit, userInput, setUserInput }) => {
 					value={userInput}
 					onChange={(e) => setUserInput(e.target.value)}
 				/>
-				<button type='submit' className="btn">Start Game</button>
+				<div className='button-wrapper'>
+					<button type='submit' className="btn">Start Game</button>
+				</div>
 			</div>
 		</form>
 	</div>
