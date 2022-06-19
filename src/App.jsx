@@ -1,19 +1,18 @@
 import socketio from 'socket.io-client'
-import './App.css';
+import './App.scss';
 import { useEffect, useState } from 'react'
 import GameBoard from './components/GameBoard'
+import StartPage from './components/StartPage';
 
 const socket = socketio.connect(process.env.REACT_APP_SOCKET_URL)
 
 const App = () => {
-	console.log(socket)
-
 	const [username, setUsername] = useState('')
 	const [userInput, setUserInput] = useState('')
 	const [opponentName, setOpponentName] = useState('')
 	const [fullGame, setFullGame] = useState(false)
 
-	const handleUsernameSubmit = e => {
+	const handleUsernameSubmit = (e) => {
 		e.preventDefault()
 		setUsername(userInput)
 		socket.emit('player:username', userInput)
@@ -25,7 +24,6 @@ const App = () => {
 		socket.on('username', function (username) {
 			setOpponentName(username)
 		})
-		console.log(username)
 
 		socket.on('game:full', (boolean, playersArray) => {
 			setFullGame(boolean)
@@ -45,21 +43,11 @@ const App = () => {
 					opponentName={opponentName}
 				/>
 			) : (
-				<div className='start-page'>
-					<form onSubmit={handleUsernameSubmit}>
-						<div>
-							<input
-								type='text'
-								id='username'
-								required
-								placeholder='Username'
-								value={userInput}
-								onChange={e => setUserInput(e.target.value)}
-							/>
-							<button type='submit'>Start Game</button>
-						</div>
-					</form>
-				</div>
+				<StartPage 
+					onHandleUsernameSubmit={handleUsernameSubmit}
+					userInput={userInput}
+					setUserInput={setUserInput}
+				/>
 			)}
 
 			{fullGame && username === 0 && (

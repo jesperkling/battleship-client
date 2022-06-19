@@ -1,4 +1,4 @@
-import './GameBoard.css'
+import './GameBoard.scss'
 import { useEffect, useState } from "react"
 
 const GameBoard = ({ socket, username, opponentName }) => {
@@ -26,10 +26,13 @@ const GameBoard = ({ socket, username, opponentName }) => {
 
 		if (opponentsBoats.includes(e.target.className)) {
 			postBoxClick(e.target.className, true)
+			socket.emit('player:hit', e.target.className, username, socket.id)
+			console.log(socket.id)
 		}
 
 		if (!opponentsBoats.includes(e.target.className)) {
 			postBoxClick(e.target.className, false)
+			socket.emit('player:miss', e.target.className, username, socket.id)
 		}
 	}
 
@@ -41,10 +44,32 @@ const GameBoard = ({ socket, username, opponentName }) => {
 		opponentsBoxes.push(<div className={`e${i}`} onClick={clickOnGrid} key={`${i}`}></div>)
 	}
 
+	const shotHandler = (id) => {
+		if (yourBoats.includes(id)) {
+			document.querySelector(`.${id}`).style.backgroundColor = 'green'
+			document.querySelector(`.${id}`).style.pointerEvents = 'none'
+		}
+
+		if (!yourBoats.includes(id)) {
+			document.querySelector(`.${id}`).style.backgroundColor = 'red'
+			document.querySelector(`.${id}`).style.pointerEvents = 'none'
+		}
+	}
+
 	useEffect(() => {
 		socket.on('player:disconnected', function (boolean) {
 			setLeftGame(boolean);
 		});
+
+		socket.on('player:hit', (id) => {
+			console.log('Hit', id)
+			shotHandler(id)
+		})
+
+		socket.on('player:miss', (id) => {
+			console.log('Miss', id)
+			shotHandler(id)
+		})
 	}, [socket])
 	
 	return (

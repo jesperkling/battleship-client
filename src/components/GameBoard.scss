@@ -19,11 +19,12 @@ main {
 	grid-template-rows: repeat(10, 1fr);
 	grid-column-gap: 0px;
 	grid-row-gap: 0px;
+	
+	div {
+		border: 1px solid black;
+	}
 }
 
-.yourBoard div {
-	border: 1px solid black;
-}
 
 .opponentBoard {
 	border: 1px solid black;
@@ -34,8 +35,8 @@ main {
 	grid-template-rows: repeat(10, 1fr);
 	grid-column-gap: 0px;
 	grid-row-gap: 0px;
-}
 
-.opponentBoard div {
-	border: 1px solid black;
+	div {
+		border: 1px solid black;
+	}
 }
