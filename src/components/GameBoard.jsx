@@ -4,14 +4,14 @@ import { useEffect, useState } from "react"
 const GameBoard = ({ socket, user, username, opponent }) => {
 	const [leftGame, setLeftGame] = useState(false)
 
-	const myBoxes = []
-	const opponentsBoxes = []
-
 	const [myDivs, setMyDivs] = useState([])
 	const [opponentDivs, setOpponentDivs] = useState([])
 
-	const [myBoats, setMyBoats] = useState([])
-	const [currentPlayer, setCurrentPlayer] = useState(true)
+	const [battleship, setBattleship] = useState([])
+	const [cruiser, setCruiser] = useState([])
+	const [submarine, setSubmarine] = useState([])
+
+	const [myTurn, setMyTurn] = useState(true)
 
 	const generateMyShips = (squares) => {
 		let boat = []
@@ -24,62 +24,62 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 			boat.push('y' + ++randomPosition)
 		}
 
-		if (myBoats[boat]) {
-			generateMyShips()
+		if (squares === 4) {
+			return setBattleship((myBoats) => [...myBoats, ...boat])
 		}
 
-		return setMyBoats((myBoats) => [...myBoats, ...boat])
+		if (squares === 3) {
+			return setCruiser((myBoats) => [...myBoats, ...boat])
+		}
+
+		if (squares === 2) {
+			return setSubmarine((myBoats) => [...myBoats, ...boat])
+		}
 	}
 	
-	console.log(myBoats)
+	console.log('battleship:', battleship)
+	console.log('cruiser:', cruiser)
+	console.log('submarine:', submarine)
 
 	const generateMyDivs = () => {
+		const myDivBoxes = []
+
 		for (let i = 0; i < 100; i++) {
-			if (myBoats.includes('y + i')) {
-				myBoxes.push(
-					<div className={`y${i}`} key={`${i}`}>{i + ' ⛵️'}</div>
-				)
-			} else {
-				myBoxes.push(
-					<div className={`y${i}`} key={`${i}`}>
-						{i}
-					</div>
-				)
-			}
+			myDivBoxes.push(
+				<div className={`y${i}`} key={`${i}`}>
+					{i}
+				</div>
+			)
 		}
-		return setMyDivs((myDivs) => [...myDivs, ...myBoxes])
+		return setMyDivs((myDivs) => [...myDivs, ...myDivBoxes])
 	}
 
 	const generateOpponentsDivs = () => {
+		const opponentDivBoxes = []
 		for (let i = 0; i < 100; i++) {
-			opponentsBoxes.push(
+			opponentDivBoxes.push(
 				<div className={`e${i}`} key={`${i}`}>
 					{i}
 				</div>
 			)
 		}
-		return setOpponentDivs((opponentDivs) => [...opponentDivs, ...opponentsBoxes])
+		return setOpponentDivs((opponentDivs) => [...opponentDivs, ...opponentDivBoxes])
 	}
 
 	const clickOnGrid = e => {
-		if (currentPlayer) {
-			console.log(`${username} is currently: ${currentPlayer}`)
+		if (myTurn) {
 			socket.emit('player:guessed', e.target.className)
-			setCurrentPlayer(false)
-		}
-
-		if (!currentPlayer) {
-			console.log(`${username} is currently: ${currentPlayer}`)
-			socket.emit('player:guessed', e.target.className)
-			setCurrentPlayer(true)
+			setMyTurn(false)
 		}
 	}
 
 	const handleGuess = (id) => {
 		const target = id.replace('e', 'y')
-		const hit = myBoats.includes(target)
+		const hitBattleship = battleship.includes(target)
+		const hitCruiser = cruiser.includes(target)
+		const hitSubmarine = submarine.includes(target)
 
-		if (hit) {
+		if (hitBattleship || hitCruiser || hitSubmarine) {
 			console.log('it was a hit')
 
 			document.querySelector(`.${target}`).style.backgroundColor = 'green'
@@ -94,6 +94,7 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 
 			socket.emit('player:guess-response', target, false)
 		}
+		setMyTurn(true)
 	}
 
 	const handleGuessResponse = (id, boolean) => {
@@ -114,6 +115,9 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 
 	useEffect(() => {
 		generateMyShips(4)
+		generateMyShips(3)
+		generateMyShips(2)
+		generateMyShips(2)
 
 		generateMyDivs()
 		generateOpponentsDivs()
@@ -121,6 +125,8 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 	}, [])
 	
 	useEffect(() => {
+		console.log('myturn:', myTurn)
+
 		socket.on('player:disconnected', playerDisconnected);
 
 		socket.on('player:guessed', handleGuess)
@@ -138,6 +144,8 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 			) : (
 				<p>Waiting for opponent to connect...</p>
 			)}
+
+			{myTurn ? <p>My turn</p> : <div>Opponents turn</div>}
 
 			{leftGame === true && <h2>{opponent.username} left game...</h2>}
 
