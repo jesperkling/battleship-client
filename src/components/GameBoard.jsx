@@ -54,6 +54,16 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 		return setMyDivs((myDivs) => [...myDivs, ...myDivBoxes])
 	}
 
+	const displayBoats = () => {
+		const boats = battleship.concat(cruiser, submarine)
+		console.log('all boats:', boats)
+
+		for (let i = 0; i < boats.length; i++) {
+			let myBoats = boats[i]
+			document.querySelector(`.${myBoats}`).style.backgroundColor = 'black'
+		}
+	}
+
 	const generateOpponentsDivs = () => {
 		const opponentDivBoxes = []
 		for (let i = 0; i < 100; i++) {
@@ -123,6 +133,10 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 		generateOpponentsDivs()
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
+
+	useEffect(() => {
+		displayBoats()
+	}, [generateMyShips, displayBoats])
 	
 	useEffect(() => {
 		console.log('myturn:', myTurn)
