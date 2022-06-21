@@ -1,21 +1,46 @@
 import './GameBoard.scss'
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
-const GameBoard = ({ socket, user, username, opponent }) => {
+const GameBoard = ({ socket, user, opponent }) => {
 	const [leftGame, setLeftGame] = useState(false)
 
 	const [myDivs, setMyDivs] = useState([])
 	const [opponentDivs, setOpponentDivs] = useState([])
 
+	const [myBoats, setMyBoats] = useState(4)
+	const [opponentBoats, setOpponentBoats] = useState(4)
+
+	const boats = []
+
 	const [battleship, setBattleship] = useState([])
 	const [cruiser, setCruiser] = useState([])
-	const [submarine, setSubmarine] = useState([])
+	const [submarineOne, setSubmarineOne] = useState([])
+	const [submarineTwo, setSubmarineTwo] = useState([])
 
-	const [myTurn, setMyTurn] = useState(true)
+	const [myTurn, setMyTurn] = useState()
 
-	const generateMyShips = (squares) => {
+	const generateMyShips = (squares, extra) => {
 		let boat = []
-		let randomPosition = Math.floor(Math.random() * 100)
+		let randomPosition
+		
+		if (squares === 4) {
+			let yPosition = Math.floor(Math.random() * 7) + 1
+			let xPosition = Math.floor(Math.random() * 7)
+			randomPosition = '' + yPosition + xPosition
+		}
+
+		if (squares === 3) {
+			let yPosition = Math.floor(Math.random() * 8) + 1
+			let xPosition = Math.floor(Math.random() * 8)
+			randomPosition = '' + yPosition + xPosition
+		}
+
+		if (squares === 2) {
+			let yPosition = Math.floor(Math.random() * 9) + 1
+			let xPosition = Math.floor(Math.random() * 9)
+			randomPosition = '' + yPosition + xPosition
+		}
+
 		let startPosition = 'y' + randomPosition
 
 		boat.push(startPosition)
@@ -24,88 +49,151 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 			boat.push('y' + ++randomPosition)
 		}
 
-		if (squares === 4) {
-			return setBattleship((myBoats) => [...myBoats, ...boat])
+		if (boats.some((item) => boat.includes(item))) {
+			boat = []
+			generateMyShips(squares, extra)
 		}
 
-		if (squares === 3) {
-			return setCruiser((myBoats) => [...myBoats, ...boat])
+		if (boat.length === 4 && extra === 'single') {
+			boats.push(...boat)
+			
+			return setBattleship((battleship) => [...battleship, ...boat])
 		}
 
-		if (squares === 2) {
-			return setSubmarine((myBoats) => [...myBoats, ...boat])
+		if (boat.length === 3 && extra === 'single') {
+			boats.push(...boat)
+
+			return setCruiser((cruiser) => [...cruiser, ...boat])
+		}
+
+		if (boat.length === 2 && extra === 'single') {
+			boats.push(...boat)
+
+			return setSubmarineOne((submarineOne) => [...submarineOne, ...boat])
+		}
+
+		if (boat.length === 2 && extra === 'double') {
+			boats.push(...boat)
+			
+			return setSubmarineTwo((submarineTwo) => [...submarineTwo, ...boat])
 		}
 	}
 	
-	console.log('battleship:', battleship)
-	console.log('cruiser:', cruiser)
-	console.log('submarine:', submarine)
-
 	const generateMyDivs = () => {
 		const myDivBoxes = []
 
 		for (let i = 0; i < 100; i++) {
 			myDivBoxes.push(
-				<div className={`y${i}`} key={`${i}`}>
-					{i}
-				</div>
+				<div className={`y${i}`} key={`${i}`}></div>
 			)
 		}
 		return setMyDivs((myDivs) => [...myDivs, ...myDivBoxes])
 	}
 
-	const displayBoats = () => {
-		const boats = battleship.concat(cruiser, submarine)
-		console.log('all boats:', boats)
-
-		for (let i = 0; i < boats.length; i++) {
-			let myBoats = boats[i]
-			document.querySelector(`.${myBoats}`).style.backgroundColor = 'black'
-		}
-	}
 
 	const generateOpponentsDivs = () => {
 		const opponentDivBoxes = []
 		for (let i = 0; i < 100; i++) {
 			opponentDivBoxes.push(
-				<div className={`e${i}`} key={`${i}`}>
-					{i}
-				</div>
+				<div className={`e${i}`} key={`${i}`}></div>
 			)
 		}
 		return setOpponentDivs((opponentDivs) => [...opponentDivs, ...opponentDivBoxes])
 	}
 
-	const clickOnGrid = e => {
+	const clickOnGrid = (e) => {
 		if (myTurn) {
 			socket.emit('player:guessed', e.target.className)
+
 			setMyTurn(false)
 		}
 	}
 
-	const handleGuess = (id) => {
+	const removePart = (array, hit) => {
+		let index = array.indexOf(hit)
+		array.splice(index, 1)
+		return
+	}
+
+	const handleGuess = useCallback((id) => {
 		const target = id.replace('e', 'y')
 		const hitBattleship = battleship.includes(target)
 		const hitCruiser = cruiser.includes(target)
-		const hitSubmarine = submarine.includes(target)
+		const hitSubmarineOne = submarineOne.includes(target)
+		const hitSubmarineTwo = submarineTwo.includes(target)
 
-		if (hitBattleship || hitCruiser || hitSubmarine) {
+		if (hitBattleship) {
 			console.log('it was a hit')
 
 			document.querySelector(`.${target}`).style.backgroundColor = 'green'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, true)
+
+			removePart(battleship, target)
+
+			if (battleship.length === 0) {
+				setMyBoats((prevState) => prevState - 1)
+				
+				socket.emit('player:boat-sunken', 1)
+			}
+		} else if (hitCruiser) {
+			console.log('it was a hit')
+
+			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.pointerEvents = 'none'
+
+			socket.emit('player:guess-response', target, true)
+
+			removePart(cruiser, target)
+
+			if (cruiser.length === 0) {
+				setMyBoats((prevState) => prevState - 1)
+
+				socket.emit('player:boat-sunken', 1)
+			}
+		} else if (hitSubmarineOne) {
+			console.log('it was a hit')
+
+			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.pointerEvents = 'none'
+
+			socket.emit('player:guess-response', target, true)
+
+			removePart(submarineOne, target)
+
+			if (submarineOne.length === 0) {
+				setMyBoats((prevState) => prevState - 1)
+
+				socket.emit('player:boat-sunken', 1)
+			}
+		} else if (hitSubmarineTwo) {
+			console.log('it was a hit')
+
+			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.pointerEvents = 'none'
+
+			socket.emit('player:guess-response', target, true)
+
+			removePart(submarineTwo, target)
+
+			if (submarineTwo.length === 0) {
+				setMyBoats((prevState) => prevState - 1)
+
+				socket.emit('player:boat-sunken', 1)
+			}
 		} else {
-			console.log('it was a miss')
+			console.log('miss')
 
 			document.querySelector(`.${target}`).style.backgroundColor = 'red'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, false)
 		}
-		setMyTurn(true)
-	}
+
+			setMyTurn(true)
+	
+	},  [battleship, cruiser, socket, submarineOne, submarineTwo])
 
 	const handleGuessResponse = (id, boolean) => {
 		const target = id.replace('y', 'e')
@@ -119,15 +207,19 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 		}
 	}
 
+	const handleSunkenBoat = (id) => {
+		setOpponentBoats((prevState) => prevState - id)
+	}
+
 	const playerDisconnected = (boolean) => {
 		setLeftGame(boolean)
 	}
 
 	useEffect(() => {
-		generateMyShips(4)
-		generateMyShips(3)
-		generateMyShips(2)
-		generateMyShips(2)
+		generateMyShips(4, 'single')
+		generateMyShips(3, 'single')
+		generateMyShips(2, 'single')
+		generateMyShips(2, 'single')
 
 		generateMyDivs()
 		generateOpponentsDivs()
@@ -135,18 +227,41 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 	}, [])
 
 	useEffect(() => {
+		const displayBoats = () => {
+			const allBoats = battleship.concat(cruiser, submarineOne, submarineTwo)
+
+			for (let i = 0; i < allBoats.length; i++) {
+				let myBoatsLocation = allBoats[i]
+				document.querySelector(`.${myBoatsLocation}`).style.backgroundColor = 'black'
+			}
+		}
+
 		displayBoats()
-	}, [generateMyShips, displayBoats])
+	}, [battleship, cruiser, submarineOne, submarineTwo])
 	
 	useEffect(() => {
-		console.log('myturn:', myTurn)
-
 		socket.on('player:disconnected', playerDisconnected);
 
 		socket.on('player:guessed', handleGuess)
 
 		socket.on('player:guess-response', handleGuessResponse)
-	}, [socket, user, username, opponent])
+
+		socket.on('player:boat-sunken', handleSunkenBoat)
+		
+		return () => {
+			socket.off('player:disconnected', playerDisconnected)
+
+			socket.off('player:guessed', handleGuess)
+
+			socket.off('player:guess-response', handleGuessResponse)
+
+			socket.off('player:boat-sunken', handleSunkenBoat)
+		}
+	}, [handleGuess, socket])
+
+	useEffect(() => {
+		setMyTurn(user.turn)
+	}, [user])
 	
 	return (
 		<div>
@@ -165,18 +280,31 @@ const GameBoard = ({ socket, user, username, opponent }) => {
 
 			<main>
 				<section>
-					<h3>My board</h3>
+					{user && opponent && (
+						<div>
+							<h3>{user.username}</h3>
+							<p>Boats left: {myBoats}</p>
+						</div>
+					)}
+
 					<div className='myBoard'>
 						{myDivs}
 					</div>
 				</section>
 				<section>
-					<p>Opponent board, click here:</p>
+					{user && opponent &&(
+						<div>
+							<h3>{opponent.username}</h3>
+							<p>Boats left: {opponentBoats}</p>
+						</div>
+					)}
+
 					<div className='opponentBoard' onClick={clickOnGrid}>
 						{opponentDivs}
 					</div>
 				</section>
 			</main>
+
 		</div>
 	)
 }
