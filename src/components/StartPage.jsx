@@ -4,7 +4,6 @@ const StartPage = ({ onHandleUsernameSubmit, userInput, setUserInput }) => {
 	return (
 		<div className="start-page">
 			<form onSubmit={onHandleUsernameSubmit}>
-				<div>
 					<input
 						type='text'
 						id='username'
@@ -13,10 +12,7 @@ const StartPage = ({ onHandleUsernameSubmit, userInput, setUserInput }) => {
 						value={userInput}
 						onChange={(e) => setUserInput(e.target.value)}
 					/>
-					<div className='button-wrapper'>
-						<button type='submit' className="btn">Start Game</button>
-					</div>
-				</div>
+					<button type='submit' className="btn">Start Game</button>
 			</form>
 		</div>
   )

@@ -6,7 +6,7 @@ import StartPage from './components/StartPage';
 
 const socket = socketio.connect(process.env.REACT_APP_SOCKET_URL)
 
-const App = () => {
+function App() {
 	const [username, setUsername] = useState('')
 	const [userInput, setUserInput] = useState('')
 	const [user, setUser] = useState('')
