@@ -18,6 +18,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 	const [submarineTwo, setSubmarineTwo] = useState([])
 
 	const [myTurn, setMyTurn] = useState()
+	const [errorAlert, setErrorAlert] = useState(false)
 
 	const generateMyShips = (squares, extra) => {
 		let boat = []
@@ -102,10 +103,20 @@ const GameBoard = ({ socket, user, opponent }) => {
 	}
 
 	const clickOnGrid = (e) => {
-		if (myTurn) {
-			socket.emit('player:guessed', e.target.className)
+		if (opponentBoats === 0 || myBoats === 0) {
+			document.querySelector(`myBoard gameboard`).style.pointerEvents = 'none'
+		}
 
-			setMyTurn(false)
+		if (myTurn) {
+			try {
+				socket.emit('player:guessed', e.target.className)
+				document.querySelector(`.${e.target.className}`).style.pointerEvents = 'none'
+				setMyTurn(false)
+				setErrorAlert(false)
+
+			} catch (error) {
+				setErrorAlert(true)
+			}
 		}
 	}
 
@@ -123,9 +134,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 		const hitSubmarineTwo = submarineTwo.includes(target)
 
 		if (hitBattleship) {
-			console.log('it was a hit')
-
-			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.backgroundColor ='green'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, true)
@@ -138,9 +147,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 				socket.emit('player:boat-sunken', 1)
 			}
 		} else if (hitCruiser) {
-			console.log('it was a hit')
-
-			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.backgroundColor ='green'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, true)
@@ -153,9 +160,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 				socket.emit('player:boat-sunken', 1)
 			}
 		} else if (hitSubmarineOne) {
-			console.log('it was a hit')
-
-			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.backgroundColor ='green'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, true)
@@ -168,9 +173,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 				socket.emit('player:boat-sunken', 1)
 			}
 		} else if (hitSubmarineTwo) {
-			console.log('it was a hit')
-
-			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.backgroundColor ='green'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, true)
@@ -183,9 +186,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 				socket.emit('player:boat-sunken', 1)
 			}
 		} else {
-			console.log('miss')
-
-			document.querySelector(`.${target}`).style.backgroundColor = 'red'
+			document.querySelector(`.${target}`).style.backgroundColor ='red'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 
 			socket.emit('player:guess-response', target, false)
@@ -199,10 +200,10 @@ const GameBoard = ({ socket, user, opponent }) => {
 		const target = id.replace('y', 'e')
 
 		if (boolean === false) {
-			document.querySelector(`.${target}`).style.backgroundColor = 'red'
+			document.querySelector(`.${target}`).style.backgroundColor ='red'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 		} else {
-			document.querySelector(`.${target}`).style.backgroundColor = 'green'
+			document.querySelector(`.${target}`).style.backgroundColor ='green'
 			document.querySelector(`.${target}`).style.pointerEvents = 'none'
 		}
 	}
@@ -219,7 +220,7 @@ const GameBoard = ({ socket, user, opponent }) => {
 		generateMyShips(4, 'single')
 		generateMyShips(3, 'single')
 		generateMyShips(2, 'single')
-		generateMyShips(2, 'single')
+		generateMyShips(2, 'double')
 
 		generateMyDivs()
 		generateOpponentsDivs()
@@ -265,45 +266,68 @@ const GameBoard = ({ socket, user, opponent }) => {
 	
 	return (
 		<div>
-			<h2>Battleship Gameboard</h2>
-			{user && opponent ? (
-				<p>
-					<span>{user.username}</span> vs <span>{opponent.username}</span>
-				</p>
-			) : (
-				<p>Waiting for opponent to connect...</p>
-			)}
+			<header>
+				<h2>Battleship Gameboard</h2>
+				
+				{user && opponent ? (
+					<p>
+						<span>{user.username}</span> vs <span>{opponent.username}</span>
+					</p>
+				) : (
+					<p>Waiting for opponent to connect...</p>
+				)}
 
-			{myTurn ? <p>My turn</p> : <div>Opponents turn</div>}
+				{myTurn ? (
+					<p>My turn</p>
+				) : ( 
+					<div>Opponents turn</div>
+				)}
 
-			{leftGame === true && <h2>{opponent.username} left game...</h2>}
+				{leftGame === true && (
+					<h2>{opponent.username} left game...</h2>
+				)}
+			</header>
 
 			<main>
 				<section>
 					{user && opponent && (
-						<div>
+						<div className='player-container'>
 							<h3>{user.username}</h3>
 							<p>Boats left: {myBoats}</p>
 						</div>
 					)}
 
-					<div className='myBoard'>
+					<div className='myBoard gameboard'>
 						{myDivs}
 					</div>
 				</section>
+				
 				<section>
 					{user && opponent &&(
-						<div>
+						<div className='player-container'>
 							<h3>{opponent.username}</h3>
 							<p>Boats left: {opponentBoats}</p>
 						</div>
 					)}
 
-					<div className='opponentBoard' onClick={clickOnGrid}>
+					<div className={myTurn ? 'opponentBoard gameboard' : 'opponentBoard gameboard inactive'} onClick={clickOnGrid}>
 						{opponentDivs}
 					</div>
 				</section>
 			</main>
+			
+			{myBoats === 0 && (
+				<alert>Game over you lost!</alert>
+			)}
+
+			{opponentBoats === 0 && (
+				<alert>You won, congrats!</alert>
+			)}
+
+			{errorAlert && (
+				<alert>You can't click the same spot again</alert>
+
+			)}
 
 		</div>
 	)

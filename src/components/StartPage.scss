@@ -1,6 +1,9 @@
 .start-page {
 	display: flex;
 	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	min-height: 50vh;
 	input {
 		border: none;
 		border-bottom: 2px solid blue;
@@ -8,7 +11,7 @@
 	}
 }
 
-.button-wrapper {
-	display: flex;
-	justify-content: center;
-}
+// .button-wrapper {
+// 	display: flex;
+// 	justify-content: center;
+// }

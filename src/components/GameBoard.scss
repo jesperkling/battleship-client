@@ -4,13 +4,41 @@
 	box-sizing: border-box;
 }
 
+header {
+	h2 {
+		font-size: clamp(2rem, 6vw, 4rem);
+	}
+	 dialog {
+		position: absolute;
+			top: 20%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, 0.2);
+
+			p {
+				font-size: 1.125rem;
+				color: #42424271;
+				font-style: italic;
+				flex-basis: 100%;
+			}
+	 	}
+}
+
 main {
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+
+	.player-container {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		gap: 2rem;
+		padding: 1rem 0rem;
+	}
 }
 
-.myBoard {
+.gameboard {
 	height: clamp(10rem, 40vw, 40rem);
 	width: clamp(10rem, 40vw, 40rem);
 	display: grid;
@@ -21,20 +49,27 @@ main {
 	
 	div {
 		border: 1px solid black;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 2rem;
 	}
 }
 
+.inactive {
+	filter: opacity(60%) blur(0.125rem);
 
-.opponentBoard {
-	height: clamp(10rem, 40vw, 40rem);
-	width: clamp(10rem, 40vw, 40rem);
-	display: grid;
-	grid-template-columns: repeat(10, 1fr);
-	grid-template-rows: repeat(10, 1fr);
-	grid-column-gap: 0px;
-	grid-row-gap: 0px;
-
-	div {
-		border: 1px solid black;
+	&.opponentBoard > *:hover {
+		opacity: 1;
 	}
+}
+
+.opponentBoard > * {
+	transition: 0.3s all ease-in-out;
+	display: grid;
+	place-content: center;
+}
+
+.opponentBoard > *:hover {
+	opacity: 0.8;
 }

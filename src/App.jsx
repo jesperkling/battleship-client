@@ -9,10 +9,8 @@ const socket = socketio.connect(process.env.REACT_APP_SOCKET_URL)
 const App = () => {
 	const [username, setUsername] = useState('')
 	const [userInput, setUserInput] = useState('')
-
 	const [user, setUser] = useState('')
 	const [opponent, setOpponent] = useState('')
-	const [fullGame, setFullGame] = useState(false)
 
 	const handleUsernameSubmit = (e) => {
 		e.preventDefault()
@@ -31,16 +29,12 @@ const App = () => {
 				setOpponent(otherSocket)
 			}
 		})
-
-		socket.on('game:full', (boolean, playersArray) => {
-			setFullGame(boolean)
-			setUsername(playersArray.length)
-		})
-
 	}, [opponent, user, username])
 
+	useEffect(() => {}, [])
+
 	return (
-		<div>
+		<div className='App'>
 			<h1>Battleship Game</h1>
 
 			{username ? ( 
@@ -48,7 +42,7 @@ const App = () => {
 					socket={socket} 
 					user={user}
 					username={username}
-					opponentName={opponent}
+					opponent={opponent}
 				/>
 			) : (
 				<StartPage 
@@ -56,12 +50,6 @@ const App = () => {
 					userInput={userInput}
 					setUserInput={setUserInput}
 				/>
-			)}
-
-			{fullGame && username === 0 && (
-				<div>
-					<h2>Game Full</h2>
-				</div>
 			)}
 		</div>
 	)
