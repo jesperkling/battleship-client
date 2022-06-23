@@ -353,7 +353,8 @@ const GameBoard = ({ socket, user, opponent }) => {
 				<dialog open className='dialog-box'>
 					<h2>You can't click the same spot again</h2>
 					<button
-						onClick={() => window.location.reload()}
+						onClick={handleCloseErrorAlert}
+						type='button'
 						className='btn'
 					>Close</button>
 				</dialog>
