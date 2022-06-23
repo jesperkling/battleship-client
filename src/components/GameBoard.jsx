@@ -1,4 +1,5 @@
 import './GameBoard.scss'
+import '../App.scss'
 import { useCallback, useEffect, useState } from "react"
 
 const GameBoard = ({ socket, user, opponent }) => {
@@ -19,6 +20,10 @@ const GameBoard = ({ socket, user, opponent }) => {
 
 	const [myTurn, setMyTurn] = useState()
 	const [errorAlert, setErrorAlert] = useState(false)
+
+	const handleCloseErrorAlert = () => {
+		setErrorAlert(false)
+	}
 
 	const generateMyShips = (squares, extra) => {
 		let boat = []
@@ -269,22 +274,30 @@ const GameBoard = ({ socket, user, opponent }) => {
 			<header>
 				<h2>Battleship Gameboard</h2>
 				
-				{user && opponent ? (
-					<p>
-						<span>{user.username}</span> vs <span>{opponent.username}</span>
-					</p>
-				) : (
-					<p>Waiting for opponent to connect...</p>
+				{!user && !opponent && (
+					<dialog open className='dialog-box waiting'>
+						<p>Waiting for opponent to connect...</p>
+					</dialog>
 				)}
 
 				{myTurn ? (
-					<p>My turn</p>
+					<div className='turn'>
+						<p>My turn</p>
+					</div>
 				) : ( 
-					<div>Opponents turn</div>
+					<div className='turn'>
+						<p>Opponents turn</p>
+					</div>
 				)}
 
 				{leftGame === true && (
-					<h2>{opponent.username} left game...</h2>
+					<dialog open className='dialog-box'>
+						<h2>{opponent.username} left game...</h2>
+						<button 
+							onClick={() => window.location.reload()}
+							className='btn'
+						>Close</button>
+					</dialog>
 				)}
 			</header>
 
@@ -317,15 +330,33 @@ const GameBoard = ({ socket, user, opponent }) => {
 			</main>
 			
 			{myBoats === 0 && (
-				<alert>Game over you lost!</alert>
+				<dialog open className='dialog-box game-over-box'>
+					<h2>Game over you lost!</h2>
+					<button
+						onClick={() => window.location.reload()}
+						className='btn'
+					>Close</button>
+				</dialog>
 			)}
 
 			{opponentBoats === 0 && (
-				<alert>You won, congrats!</alert>
+				<dialog open className='dialog-box game-over-box'>
+					<h2>You won, congrats!</h2>
+					<button
+						onClick={() => window.location.reload()}
+						className='btn'
+					>Close</button>
+				</dialog>
 			)}
 
 			{errorAlert && (
-				<alert>You can't click the same spot again</alert>
+				<dialog open className='dialog-box'>
+					<h2>You can't click the same spot again</h2>
+					<button
+						onClick={() => window.location.reload()}
+						className='btn'
+					>Close</button>
+				</dialog>
 
 			)}
 
