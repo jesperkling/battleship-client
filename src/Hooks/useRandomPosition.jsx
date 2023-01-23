@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useRandomPosition() {
+const useRandomPosition = () => {
   const coordinates = [
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
@@ -50,44 +50,77 @@ export default function useRandomPosition() {
     }
 
     let interval = getRandomInteger(10 - size);
-    let first = coordinates[align][interval];
+    let start = coordinates[align][interval];
     let array = [];
 
     for (let i = 0; i < size; i++) {
-      const secondCoord = coordinates[opposite][interval++];
-      let firstCoord = first;
+      const lengthCoord = coordinates[opposite][interval++];
+      let startCoord = start;
       let coord;
 
-      if (typeof firstCoord === "string") {
-        coord = firstCoord + secondCoord;
+      if (typeof startCoord === "string") {
+        coord = startCoord + lengthCoord;
       } else {
-        coord = secondCoord + firstCoord;
+        coord = lengthCoord + startCoord;
       }
 
-      if (boatCoordinates.includes(coord)) {
-        return;
-      }
+      coord = coord.toString();
 
-      array.push(coord.toString());
+      array.push(coord);
     }
     return array;
   }
 
   useEffect(() => {
-    let generatedCoordinates = getCoordinates(4);
-    console.log(generatedCoordinates);
+    function checkBoat(boat) {
+      for (let i = 0; i < boat.length; i++) {
+        const element = boat[i];
 
-    for (let i = 0; i < generatedCoordinates.length; i++) {
-      const element = generatedCoordinates[i];
-
-      if (boatCoordinates.includes(element)) {
-        return;
+        if (boatCoordinates.includes(element)) {
+          console.log("already exists", boat.length, boat);
+          boat = getCoordinates(boat.length);
+          console.log("new boat", boat);
+        }
       }
-
-      boats[0].coordinate.push(generatedCoordinates[i]);
-      console.log("Coordinates", boats[0].coordinate);
+      return boat;
     }
+
+    let boat4 = checkBoat(getCoordinates(4));
+    for (let i = 0; i < boat4.length; i++) {
+      const element = boat4[i];
+      boatCoordinates.push(element);
+    }
+
+    let boat3 = checkBoat(getCoordinates(3));
+    for (let i = 0; i < boat3.length; i++) {
+      const element = boat3[i];
+      boatCoordinates.push(element);
+    }
+
+    let boat2one = checkBoat(getCoordinates(2));
+    for (let i = 0; i < boat2one.length; i++) {
+      const element = boat2one[i];
+      boatCoordinates.push(element);
+    }
+
+    let boat2two = checkBoat(getCoordinates(2));
+    for (let i = 0; i < boat2two.length; i++) {
+      const element = boat2two[i];
+      boatCoordinates.push(element);
+    }
+
+    setBoats(
+      (boats[0].coordinate = [...boat4]),
+      (boats[1].coordinate = [...boat3]),
+      (boats[2].coordinate = [...boat2one]),
+      (boats[3].coordinate = [...boat2two])
+    );
+
+    console.log(boatCoordinates);
+    console.log("The fleet", boats);
   }, []);
 
   return [boats];
-}
+};
+
+export default useRandomPosition;
