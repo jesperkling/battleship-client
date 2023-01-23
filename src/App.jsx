@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <SocketContext>
-        <Container className="py-3">
+        <Container>
           <Routes>
             <Route path="/" element={<StartPage />} />
             <Route path="/gameboard" element={<GamePage />} />

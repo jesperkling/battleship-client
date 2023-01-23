@@ -2,6 +2,12 @@
   text-align: center;
 }
 
+body {
+  background-color: rgb(52, 120, 223);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +41,41 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.gameboard {
+  display: flex;
+  margin: 2em;
+}
+
+button {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  color: black;
+  text-decoration: none;
+  border: 1px solid rgb(192, 192, 192);
+  opacity: 0.7;
+  background-color: white;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.gameUI {
+  display: flex;
+  justify-content: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+.square {
+  width: 2.7em;
+  height: 2.7em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
