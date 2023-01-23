@@ -65,6 +65,10 @@ button:hover {
   opacity: 1;
 }
 
+.row {
+  display: inline;
+}
+
 .gameUI {
   display: flex;
   justify-content: center;

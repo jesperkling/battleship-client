@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -5,7 +6,13 @@ import useGenerateFleet from "../Hooks/useGenerateFleet";
 import "../App.css";
 
 export default function Gameboard(props) {
-  const fleet = useGenerateFleet();
+  const [fleet, setFleet] = useState(useGenerateFleet());
+
+  const updateFleet = () => {
+    const newFleet = [...fleet];
+    newFleet[0][0][0] = true;
+    setFleet(newFleet);
+  };
 
   return (
     <Container className="gameboard">
@@ -43,6 +50,7 @@ export default function Gameboard(props) {
           ))}
         </Row>
       ))}
+      <button onClick={updateFleet}>Update board</button>
     </Container>
   );
 }

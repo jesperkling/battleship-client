@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const useGenerateFleet = () => {
-  const [fleet, setFleet] = useState([
+  const fleet = [
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
@@ -12,7 +12,7 @@ const useGenerateFleet = () => {
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
-  ]);
+  ];
 
   const [ships, setShips] = useState([
     { size: 4, coordinates: [], sunk: false },

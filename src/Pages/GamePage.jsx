@@ -3,13 +3,8 @@ import Gameboard from "../Components/Gameboard";
 import "../App.css";
 import { useSocketContext } from "../Contexts/SocketContext";
 import Button from "react-bootstrap/Button";
-import useGenerateFleet from "../Hooks/useGenerateFleet";
-import useRandomPosition from "../Hooks/useRandomPosition";
 
 export default function GamePage() {
-  const fleet = useGenerateFleet();
-  console.log("GamePage", fleet);
-
   const socket = useSocketContext();
 
   const [waitingForGame, setWaitingForGame] = useState(false);
@@ -82,10 +77,12 @@ export default function GamePage() {
       </Button>
       {waitingForGame && <p>Waiting for game...</p>}
       {gameFound && <p>Game found!</p>}
-      <div className="gameUI">
-        <Gameboard rows={row} columns={column} refs={ref} />
-        <Gameboard rows={row} columns={column} refs={ref} />
-      </div>
+      {gameFound && (
+        <div className="gameUI">
+          <Gameboard rows={row} columns={column} refs={ref} />
+          <Gameboard rows={row} columns={column} refs={ref} />
+        </div>
+      )}
     </>
   );
 }
