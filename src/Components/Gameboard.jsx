@@ -21,11 +21,11 @@ export default function Gameboard(props) {
             <Col className="square" key={index}>
               <button
                 onClick={(e) =>
-                  console.log(props.rows[object - 1] + props.columns[index])
+                  console.log(props.columns[index] + props.rows[object - 1])
                 }
               >
-                {props.rows[object - 1]}
                 {props.columns[index]}
+                {props.rows[object - 1]}
               </button>
             </Col>
           ))}
