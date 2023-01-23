@@ -71,6 +71,7 @@ export default function GamePage() {
     "H",
     "I",
     "J",
+    "K",
   ]);
 
   return (
