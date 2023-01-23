@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
+import Gameboard from "../Components/Gameboard";
 import "../App.css";
 
 export default function GamePage() {
@@ -30,7 +28,7 @@ export default function GamePage() {
     "J",
   ]);
 
-  const [index, setIndex] = useState([
+  const [ref, setRef] = useState([
     "",
     "A",
     "B",
@@ -48,62 +46,8 @@ export default function GamePage() {
     <>
       <h1>Battleship Game</h1>
       <div className="gameUI">
-        <Container className="gameboard">
-          <Row className="row">
-            {index.map((value, index) => (
-              <Col className="square" key={index}>
-                {value}
-              </Col>
-            ))}
-          </Row>
-          {row.map((object, index) => (
-            <Row className="row" key={index}>
-              <Col className="square" key={index}>
-                {row[index]}
-              </Col>
-              {column.map((value, index) => (
-                <Col className="square" key={index}>
-                  <button
-                    onClick={(e) =>
-                      console.log(row[object - 1] + column[index])
-                    }
-                  >
-                    {row[object - 1]}
-                    {column[index]}
-                  </button>
-                </Col>
-              ))}
-            </Row>
-          ))}
-        </Container>
-        <Container className="gameboard">
-          <Row className="row">
-            {index.map((value, index) => (
-              <Col className="square" key={index}>
-                {value}
-              </Col>
-            ))}
-          </Row>
-          {row.map((object, index) => (
-            <Row className="row" key={index}>
-              <Col className="square" key={index}>
-                {row[index]}
-              </Col>
-              {column.map((value, index) => (
-                <Col className="square" key={index}>
-                  <button
-                    onClick={(e) =>
-                      console.log(row[object - 1] + column[index])
-                    }
-                  >
-                    {row[object - 1]}
-                    {column[index]}
-                  </button>
-                </Col>
-              ))}
-            </Row>
-          ))}
-        </Container>
+        <Gameboard rows={row} columns={column} refs={ref} />
+        <Gameboard rows={row} columns={column} refs={ref} />
       </div>
     </>
   );
