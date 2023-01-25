@@ -70,6 +70,17 @@ export default function GamePage() {
     "K",
   ]);
 
+  const [flag, setFlag] = useState();
+  socket.on("playerTurn", (id) => {
+    if (socket.id === id) {
+      setFlag(false);
+      console.log("you start", flag);
+    } else {
+      setFlag(true);
+      console.log("opponent turn", flag);
+    }
+  });
+
   return (
     <>
       <h1>Battleship Game</h1>
@@ -80,8 +91,13 @@ export default function GamePage() {
       {gameFound && <p>Game found!</p>}
       {gameFound && (
         <div className="gameUI">
-          <Gameboard rows={row} columns={column} refs={ref} />
-          <OpponentGameboard rows={row} columns={column} refs={ref} />
+          <Gameboard rows={row} columns={column} refs={ref} flag={flag} />
+          <OpponentGameboard
+            rows={row}
+            columns={column}
+            refs={ref}
+            flag={flag}
+          />
         </div>
       )}
     </>

@@ -6,22 +6,23 @@ import Row from "react-bootstrap/Row";
 import useGenerateFleet from "../Hooks/useGenerateFleet";
 import "../App.css";
 
+let initialBoard = [];
+
+const generateBoard = () => {
+  for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
+    initialBoard.push([]);
+
+    for (let i = 0; i < 10; i++) {
+      initialBoard[rowIndex].push({ hitShip: false, missShip: false });
+    }
+  }
+};
+
+generateBoard();
+
 export default function OpponentGameboard(props) {
   const socket = useSocketContext();
-  const [fleet, setFleet] = useState([
-    [
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null, null],
-    ],
-  ]);
+  const [fleet, setFleet] = useState([initialBoard]);
 
   socket.on("coordinatesFromServer", (coordinates) => {
     console.log(typeof coordinates);
@@ -50,7 +51,7 @@ export default function OpponentGameboard(props) {
             >
               <button
                 className={`${ship !== null ? "active" : ""}`}
-                disabled={ship}
+                // disabled={ship}
                 value={ship}
                 onClick={(e) => {
                   console.log(
