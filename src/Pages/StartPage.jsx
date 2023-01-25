@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 export default function StartPage() {
   return (
     <>
-      <Container>
+      <Container className="p-5">
         <Form>
-          <Form.Group>
+          <Form.Group className="p-5">
             <Form.Control type="text" placeholder="Username" />
           </Form.Group>
-          <Button variant="info" as={Link} to="/gameboard" onClick="">
+          <Button variant="warning" as={Link} to="/gameboard" onClick="">
             Start Game
           </Button>
         </Form>

@@ -1,4 +1,5 @@
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import GamePage from "./Pages/GamePage";
 import Container from "react-bootstrap/Container";
 import { Routes, Route } from "react-router-dom";

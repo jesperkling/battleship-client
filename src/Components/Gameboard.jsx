@@ -5,14 +5,22 @@ import Row from "react-bootstrap/Row";
 import useGenerateFleet from "../Hooks/useGenerateFleet";
 import "../App.css";
 
-export default function Gameboard(props) {
-  const [fleet, setFleet] = useState(useGenerateFleet());
+let initialBoard = [];
 
-  const updateFleet = () => {
-    const newFleet = [...fleet];
-    newFleet[0][0][0] = true;
-    setFleet(newFleet);
-  };
+const generateBoard = () => {
+  for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
+    initialBoard.push([]);
+
+    for (let i = 0; i < 10; i++) {
+      initialBoard[rowIndex].push({ hitShip: false, missShip: false });
+    }
+  }
+};
+
+generateBoard();
+
+export default function Gameboard(props) {
+  const [fleet, setFleet] = useState([initialBoard]);
 
   return (
     <Container className="gameboard">
@@ -36,6 +44,7 @@ export default function Gameboard(props) {
             >
               <button
                 className={`${ship !== null ? "active" : ""}`}
+                // disabled={ship.hit}
                 value={ship}
                 onClick={(e) =>
                   console.log(
@@ -50,7 +59,6 @@ export default function Gameboard(props) {
           ))}
         </Row>
       ))}
-      <button onClick={updateFleet}>Update board</button>
     </Container>
   );
 }

@@ -2,16 +2,126 @@ import { useState } from "react";
 
 const useGenerateFleet = () => {
   const fleet = [
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null, null],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
+    [
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+      { hit: false, ship: null },
+    ],
   ];
 
   const [ships, setShips] = useState([
@@ -27,7 +137,6 @@ const useGenerateFleet = () => {
 
   function generateShip(size) {
     let test = getRandomInteger(0, 1);
-    console.log("test:", test);
 
     let generate = true;
     let busy = false;
@@ -38,29 +147,24 @@ const useGenerateFleet = () => {
 
         let length = getRandomInteger(0, 9);
         let row = getRandomInteger(0, 10 - size);
-        console.log("length:", length, "row", row);
 
         row = row - 1;
-        console.log("row first:", row);
 
         for (let i = 0; i < size; i++) {
           row++;
 
-          if (fleet[row][length] !== null) {
-            console.log("busy!");
+          if (fleet[row][length].ship !== null) {
             busy = true;
           }
         }
-        console.log("busy!", busy);
 
         if (busy === false) {
-          console.log("passed control", row);
-
           row = row - size;
 
           for (let i = 0; i < size; i++) {
             row++;
-            fleet[row][length] = "ship" + size;
+            const found = ships.find((ship) => ship.size === size);
+            fleet[row][length] = found;
           }
 
           generate = false;
@@ -70,38 +174,32 @@ const useGenerateFleet = () => {
 
         let length = getRandomInteger(0, 10 - size);
         let row = getRandomInteger(0, 9);
-        console.log("length", length, "row", row);
 
         length = length - 1;
 
         for (let i = 0; i < size; i++) {
           length++;
 
-          if (fleet[row][length] !== null) {
-            console.log("Busy!!");
+          if (fleet[row][length].ship !== null) {
             busy = true;
           }
         }
-        console.log("Busy", busy);
         if (busy === false) {
-          console.log("passed control");
           length = length - size;
 
           for (let i = 0; i < size; i++) {
             length++;
-            fleet[row][length] = "ship" + size;
-            console.log("from if statement");
+            const found = ships.find((ship) => ship.size === size);
+            fleet[row][length] = found;
           }
           generate = false;
         }
       }
-      console.log(busy);
     }
 
     if (test === 0) {
       let length = getRandomInteger(0, 9);
       let row = getRandomInteger(0, 10 - size);
-      console.log("length:", length, "row:", row);
 
       row = row - 1;
       for (let i = 0; i < size; i++) {
@@ -111,7 +209,6 @@ const useGenerateFleet = () => {
     } else {
       let length = getRandomInteger(0, 10 - size);
       let row = getRandomInteger(0, 9);
-      console.log("length:", length, "row:", row);
 
       length = length - 1;
 

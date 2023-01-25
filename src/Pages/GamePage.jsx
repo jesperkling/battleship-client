@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Gameboard from "../Components/Gameboard";
+import OpponentGameboard from "../Components/OpponentGameboard";
 import "../App.css";
 import { useSocketContext } from "../Contexts/SocketContext";
 import Button from "react-bootstrap/Button";
@@ -80,7 +81,7 @@ export default function GamePage() {
       {gameFound && (
         <div className="gameUI">
           <Gameboard rows={row} columns={column} refs={ref} />
-          <Gameboard rows={row} columns={column} refs={ref} />
+          <OpponentGameboard rows={row} columns={column} refs={ref} />
         </div>
       )}
     </>
