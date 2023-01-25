@@ -20,6 +20,17 @@ const generateBoard = () => {
 generateBoard();
 
 export default function Gameboard(props) {
+  const [ships, setShips] = useState([
+    { size: 4, sunk: false, boxes: {} },
+    { size: 3, sunk: false, boxes: {} },
+    { size: 2, sunk: false, boxes: {} },
+    { size: 2, sunk: false, boxes: {} },
+  ]);
+
+  const handleShipsState = (ships) => {
+    setShips(ships);
+  };
+
   const [fleet, setFleet] = useState([initialBoard]);
 
   return (

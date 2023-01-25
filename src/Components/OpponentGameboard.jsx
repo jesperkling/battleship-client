@@ -24,6 +24,8 @@ export default function OpponentGameboard(props) {
   const socket = useSocketContext();
   const [fleet, setFleet] = useState([initialBoard]);
 
+  fleet[0][0][0].hitShip = true;
+
   socket.on("coordinatesFromServer", (coordinates) => {
     console.log(typeof coordinates);
     console.log("Coordinates from server", coordinates);
@@ -50,8 +52,8 @@ export default function OpponentGameboard(props) {
               key={index}
             >
               <button
-                className={`${ship !== null ? "active" : ""}`}
-                // disabled={ship}
+                className={`${ship.hitShip === true ? "hit" : ""}`}
+                disabled={props.flag || ship.hitShip}
                 value={ship}
                 onClick={(e) => {
                   console.log(
@@ -62,6 +64,8 @@ export default function OpponentGameboard(props) {
                     "coordinates",
                     e.target.parentElement.getAttribute("data-coords")
                   );
+                  socket.emit("madeMove", "Your turn");
+                  props.changeflag(true);
                 }}
               >
                 {index + 1 + props.columns[fleetIndex]}
