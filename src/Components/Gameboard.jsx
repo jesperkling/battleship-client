@@ -5,33 +5,14 @@ import Row from "react-bootstrap/Row";
 import useGenerateFleet from "../Hooks/useGenerateFleet";
 import "../App.css";
 
-let initialBoard = [];
-
-const generateBoard = () => {
-  for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
-    initialBoard.push([]);
-
-    for (let i = 0; i < 10; i++) {
-      initialBoard[rowIndex].push({ hitShip: false, missShip: false });
-    }
-  }
-};
-
-generateBoard();
-
 export default function Gameboard(props) {
-  const [ships, setShips] = useState([
-    { size: 4, sunk: false, boxes: {} },
-    { size: 3, sunk: false, boxes: {} },
-    { size: 2, sunk: false, boxes: {} },
-    { size: 2, sunk: false, boxes: {} },
-  ]);
+  const [fleet, setFleet] = useState(useGenerateFleet());
 
-  const handleShipsState = (ships) => {
-    setShips(ships);
+  const changeFleet = () => {
+    const newFleet = [...fleet];
+    newFleet[0][0][0] = true;
+    setFleet(newFleet);
   };
-
-  const [fleet, setFleet] = useState([initialBoard]);
 
   return (
     <Container className="gameboard">
@@ -54,8 +35,8 @@ export default function Gameboard(props) {
               key={index}
             >
               <button
-                className={`${ship !== null ? "active" : ""}`}
-                // disabled={ship.hit}
+                disabled={ship.hit}
+                className={`${ship.ship !== null ? "active" : ""}`}
                 value={ship}
                 onClick={(e) =>
                   console.log(

@@ -10,9 +10,19 @@ export default function StartPage() {
       <Container className="p-5">
         <Form>
           <Form.Group className="p-5">
-            <Form.Control type="text" placeholder="Username" />
+            <Form.Control
+              id="form-username"
+              type="text"
+              placeholder="Username"
+            />
           </Form.Group>
-          <Button variant="warning" as={Link} to="/gameboard" onClick="">
+          <Button
+            id="join-button"
+            variant="warning"
+            as={Link}
+            to="/gameboard"
+            onClick=""
+          >
             Start Game
           </Button>
         </Form>

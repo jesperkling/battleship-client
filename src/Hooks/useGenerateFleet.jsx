@@ -125,32 +125,34 @@ const useGenerateFleet = () => {
   ];
 
   const [ships, setShips] = useState([
-    { size: 4, coordinates: [], sunk: false },
-    { size: 3, coordinates: [], sunk: false },
-    { size: 2, coordinates: [], sunk: false },
-    { size: 2, coordinates: [], sunk: false },
+    { size: 4, sunk: false },
+    { size: 3, sunk: false },
+    { size: 2, sunk: false },
+    { size: 2, sunk: false },
   ]);
 
   function getRandomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  function generateShip(size) {
-    let test = getRandomInteger(0, 1);
+  function generateShip(ship) {
+    let position = getRandomInteger(0, 1);
 
     let generate = true;
+
     let busy = false;
 
     while (generate === true) {
-      if (test === 0) {
+      if (position === 0) {
         busy = false;
 
         let length = getRandomInteger(0, 9);
-        let row = getRandomInteger(0, 10 - size);
+
+        let row = getRandomInteger(0, 10 - ship.size);
 
         row = row - 1;
 
-        for (let i = 0; i < size; i++) {
+        for (let index = 0; index < ship.size; index++) {
           row++;
 
           if (fleet[row][length].ship !== null) {
@@ -159,68 +161,50 @@ const useGenerateFleet = () => {
         }
 
         if (busy === false) {
-          row = row - size;
+          row = row - ship.size;
 
-          for (let i = 0; i < size; i++) {
+          for (let index = 0; index < ship.size; index++) {
             row++;
-            const found = ships.find((ship) => ship.size === size);
-            fleet[row][length] = found;
-          }
 
+            fleet[row][length].ship = ship;
+          }
           generate = false;
         }
       } else {
         busy = false;
 
-        let length = getRandomInteger(0, 10 - size);
+        let length = getRandomInteger(0, 10 - ship.size);
+
         let row = getRandomInteger(0, 9);
 
         length = length - 1;
 
-        for (let i = 0; i < size; i++) {
+        for (let index = 0; index < ship.size; index++) {
           length++;
 
           if (fleet[row][length].ship !== null) {
             busy = true;
           }
         }
-        if (busy === false) {
-          length = length - size;
 
-          for (let i = 0; i < size; i++) {
+        if (busy === false) {
+          length = length - ship.size;
+
+          for (let index = 0; index < ship.size; index++) {
             length++;
-            const found = ships.find((ship) => ship.size === size);
-            fleet[row][length] = found;
+
+            fleet[row][length].ship = ship;
           }
           generate = false;
         }
       }
     }
-
-    if (test === 0) {
-      let length = getRandomInteger(0, 9);
-      let row = getRandomInteger(0, 10 - size);
-
-      row = row - 1;
-      for (let i = 0; i < size; i++) {
-        row++;
-        fleet[row][length] = "ship" + size;
-      }
-    } else {
-      let length = getRandomInteger(0, 10 - size);
-      let row = getRandomInteger(0, 9);
-
-      length = length - 1;
-
-      for (let i = 0; i < size; i++) {
-        length++;
-        fleet[row][length] = "ship" + size;
-      }
-    }
   }
 
-  generateShip(4);
-  generateShip(3);
+  generateShip(ships[0]);
+  generateShip(ships[1]);
+  generateShip(ships[2]);
+  generateShip(ships[3]);
 
   return [fleet];
 };

@@ -4,7 +4,6 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import useGenerateFleet from "../Hooks/useGenerateFleet";
-import "../App.css";
 
 let initialBoard = [];
 
@@ -22,6 +21,7 @@ generateBoard();
 
 export default function OpponentGameboard(props) {
   const socket = useSocketContext();
+
   const [fleet, setFleet] = useState([initialBoard]);
 
   fleet[0][0][0].hitShip = true;
@@ -40,6 +40,7 @@ export default function OpponentGameboard(props) {
           </Col>
         ))}
       </Row>
+
       {fleet[0].map((array, fleetIndex) => (
         <Row className="rad" key={fleetIndex}>
           <Col className="square" key={fleetIndex}>
@@ -52,8 +53,8 @@ export default function OpponentGameboard(props) {
               key={index}
             >
               <button
-                className={`${ship.hitShip === true ? "hit" : ""}`}
                 disabled={props.flag || ship.hitShip}
+                className={`${ship.hitShip === true ? "active" : ""}`}
                 value={ship}
                 onClick={(e) => {
                   console.log(
@@ -64,8 +65,8 @@ export default function OpponentGameboard(props) {
                     "coordinates",
                     e.target.parentElement.getAttribute("data-coords")
                   );
-                  socket.emit("madeMove", "Your turn");
-                  props.changeflag(true);
+
+                  props.changeFlag(true);
                 }}
               >
                 {index + 1 + props.columns[fleetIndex]}
