@@ -1,7 +1,11 @@
 import React from "react";
+
+// Style
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
+
+// Router
 import { Link } from "react-router-dom";
 
 export default function StartPage() {
