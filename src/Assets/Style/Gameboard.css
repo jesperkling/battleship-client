@@ -2,6 +2,8 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    background-color: aqua;
+    padding: 10px 35px 35px 25px;
 }
 
 .gameboard {
@@ -43,6 +45,8 @@ button:hover {
 
 .opponent {
     margin-top: 7.9%;
+    background-color: royalblue;
+    padding: 10px 35px 35px 25px;
 }
 
 .active {
@@ -55,4 +59,14 @@ button:hover {
   
 .miss {
     background-color: red;
+}
+
+.water {
+    background-color: yellow;
+}
+
+@media screen and (max-width: 950px) {
+    .opponent {
+        margin-bottom: 100px;
+    }
 }
