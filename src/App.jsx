@@ -10,6 +10,7 @@ function App() {
     <div className="App">
       <SocketContext>
         <Routes>
+          <Route path="*" element={<StartPage />} />
           <Route path="/" element={<StartPage />} />
           <Route path="/gameboard" element={<GamePage />} />
         </Routes>
