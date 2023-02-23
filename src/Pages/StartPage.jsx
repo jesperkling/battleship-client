@@ -16,13 +16,7 @@ export default function StartPage() {
               placeholder="Username"
             />
           </Form.Group>
-          <Button
-            id="join-button"
-            variant="warning"
-            as={Link}
-            to="/gameboard"
-            onClick=""
-          >
+          <Button id="join-button" variant="warning" as={Link} to="/gameboard">
             Start Game
           </Button>
         </Form>
