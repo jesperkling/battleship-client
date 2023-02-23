@@ -1,6 +1,7 @@
 import React from "react";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
 
 function LoseMessage() {
   return (
@@ -11,7 +12,8 @@ function LoseMessage() {
         className="play-again-btn"
         id="play-again"
         variant="info"
-        onClick=""
+        as={Link}
+        to="/"
       >
         Play again?
       </Button>
