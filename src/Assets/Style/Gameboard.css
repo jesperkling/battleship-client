@@ -2,7 +2,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background-color: aqua;
     padding: 10px 35px 35px 25px;
 }
 
@@ -36,6 +35,7 @@ button {
 
 button:hover {
     opacity: 1;
+    transition: 0.1s;
 }
 
 .alert {
@@ -61,9 +61,6 @@ button:hover {
     background-color: red;
 }
 
-.water {
-    background-color: yellow;
-}
 
 @media screen and (max-width: 950px) {
     .opponent {
