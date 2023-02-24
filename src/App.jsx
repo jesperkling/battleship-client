@@ -7,7 +7,7 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" id="App">
       <SocketContext>
         <Routes>
           <Route path="*" element={<StartPage />} />
