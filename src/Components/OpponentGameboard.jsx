@@ -1,38 +1,61 @@
-import { useState } from "react";
-import { useSocketContext } from "../Contexts/SocketContext";
+import { useCallback, useEffect, useState } from "react";
+
+// Style
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import useGenerateFleet from "../Hooks/useGenerateFleet";
 
-let initialBoard = [];
+// Context
+import { useSocketContext } from "../Contexts/SocketContext";
 
-const generateBoard = () => {
-  for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
-    initialBoard.push([]);
-
-    for (let i = 0; i < 10; i++) {
-      initialBoard[rowIndex].push({ hitShip: false, missShip: false });
-    }
-  }
-};
-
-generateBoard();
+let lastHitPosition = null;
 
 export default function OpponentGameboard(props) {
+  const generateBoard = useCallback(() => {
+    let initialBoard = [];
+
+    for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
+      initialBoard.push([]);
+
+      for (let index = 0; index < 10; index++) {
+        initialBoard[rowIndex].push({
+          hitShip: false,
+          hitWater: false,
+          coords: [index + 1, rowIndex + 1],
+        });
+      }
+    }
+    return initialBoard;
+  }, []);
+
   const socket = useSocketContext();
+  const [fleet, setFleet] = useState([generateBoard()]);
 
-  const [fleet, setFleet] = useState([initialBoard]);
+  useEffect(() => {
+    socket.on("resultOfHit", (data) => {
+      const newFleet = [...fleet];
 
-  fleet[0][0][0].hitShip = true;
+      if (data.wasHit) {
+        newFleet[0][lastHitPosition[1] - 1][
+          lastHitPosition[0] - 1
+        ].hitShip = true;
+      }
 
-  socket.on("coordinatesFromServer", (coordinates) => {
-    console.log(typeof coordinates);
-    console.log("Coordinates from server", coordinates);
-  });
+      if (!data.wasHit) {
+        newFleet[0][lastHitPosition[1] - 1][
+          lastHitPosition[0] - 1
+        ].hitWater = true;
+      }
+      setFleet(newFleet);
+    });
+
+    return () => {
+      socket.off("resultOfHit");
+    };
+  }, [fleet, socket]);
 
   return (
-    <Container className="gameboard">
+    <Container className="gameboard opponent">
       <Row className="rad">
         {props.refs.map((letter, index) => (
           <Col className="square" key={index}>
@@ -53,20 +76,23 @@ export default function OpponentGameboard(props) {
               key={index}
             >
               <button
-                disabled={props.flag || ship.hitShip}
-                className={`${ship.hitShip === true ? "active" : ""}`}
+                disabled={props.flag || ship.hitShip || ship.hitWater}
+                className={`${ship.hitShip === true ? "active" : ""} ${
+                  ship.hitWater === true ? "miss" : ""
+                }`}
                 value={ship}
                 onClick={(e) => {
                   console.log(
                     ship,
                     e.target.parentElement.getAttribute("data-coords")
                   );
+                  lastHitPosition = ship.coords;
                   socket.emit(
                     "coordinates",
                     e.target.parentElement.getAttribute("data-coords")
                   );
-
-                  props.changeFlag(true);
+                  socket.emit("madeMyMove", "Your turn!");
+                  props.changeFlag(true, "danger", "Opponents turn!");
                 }}
               >
                 {index + 1 + props.columns[fleetIndex]}

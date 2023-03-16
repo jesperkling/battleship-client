@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from "react";
+
+// Components
 import Gameboard from "../Components/Gameboard";
 import OpponentGameboard from "../Components/OpponentGameboard";
-import "../App.css";
-import { useSocketContext } from "../Contexts/SocketContext";
+import LoseMessage from "../Components/LoseMessage";
+import WinMessage from "../Components/WinMessage";
+
+// Style
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+
+// Context
+import { useSocketContext } from "../Contexts/SocketContext";
 
 export default function GamePage() {
   const socket = useSocketContext();
 
   const [waitingForGame, setWaitingForGame] = useState(false);
   const [gameFound, setGameFound] = useState(false);
+  const [gameInProgress, setGameInProgress] = useState(false);
+  const [opponentShipsLeft, setOpponentShipsLeft] = useState(4);
 
   const joinGame = () => {
     setGameFound(false);
     setWaitingForGame(true);
+    setLose(false);
+    setWin(false);
+    setOpponentShipsLeft(4);
     socket.emit("joinGame");
   };
 
@@ -30,37 +42,26 @@ export default function GamePage() {
     socket.on("gameFound", () => {
       setWaitingForGame(false);
       setGameFound(true);
+      setGameInProgress(true);
+      setGameFound(false);
     });
 
     socket.on("userLeft", (message) => {
       console.log(message);
+      setGameInProgress(false);
+      setWin(true);
     });
-  }, []);
 
-  const [row, setRow] = useState([
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-  ]);
-  const [column, setColumn] = useState([
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-  ]);
+    return () => {
+      socket.off("connected");
+      socket.off("HiRoom");
+      socket.off("gameFound");
+      socket.off("userLeft");
+    };
+  }, [socket]);
+
+  const row = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const column = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
   const [alert, setAlert] = useState("success");
   const [message, setMessage] = useState("It's your turn");
@@ -68,6 +69,12 @@ export default function GamePage() {
   const ref = ["", "A", "B", "C", "D", "F", "G", "H", "I", "J", "K"];
 
   const [flag, setFlag] = useState();
+  const [win, setWin] = useState(false);
+  const [lose, setLose] = useState(false);
+
+  const handleSetLose = () => {
+    setLose(true);
+  };
 
   function changeFlag(boolean, string, message) {
     setFlag(boolean);
@@ -87,48 +94,84 @@ export default function GamePage() {
         setAlert("danger");
       }
     });
-    socket.on("changeTurn", (msg) => {
+    socket.on("changeTurn", () => {
       setFlag(false);
       setMessage("It's your turn");
       setAlert("success");
     });
     socket.on("win", () => {
-      console.log("You won");
+      setWin(true);
     });
     socket.on("matchIsOver", () => {
-      setGameFound(false);
+      setGameInProgress(false);
     });
-  }, []);
+    socket.on("shipsLeft", (data) => {
+      if (data) {
+        setOpponentShipsLeft(data.shipsLeft);
+      }
+    });
+
+    return () => {
+      socket.off("playerTurn");
+      socket.off("changeTurn");
+      socket.off("win");
+      socket.off("matchIsOver");
+      socket.off("shipsLeft");
+    };
+  }, [flag, socket]);
 
   return (
     <>
-      <h1>Battleship Game</h1>
-
-      <Button className="w-auto" disabled={waitingForGame} onClick={joinGame}>
-        Join Game
-      </Button>
+      <div className="text-center">
+        <Button
+          className={`w-auto ${gameInProgress === true ? "d-none" : ""}`}
+          disabled={waitingForGame}
+          onClick={joinGame}
+        >
+          Join Game
+        </Button>
+      </div>
 
       {waitingForGame && <p>Waiting for game...</p>}
 
       {gameFound && <p>Game found!</p>}
 
-      {gameFound && (
-        <div className="gameUI">
-          <div className="turn">
-            <Alert key={alert} variant={alert}>
-              {message}
-            </Alert>
-            <Gameboard rows={row} columns={column} refs={ref} flag={flag} />
+      {win && <WinMessage />}
+
+      {lose && <LoseMessage />}
+
+      {gameInProgress && (
+        <>
+          <div>
+            <p>Opponents ships left: {opponentShipsLeft}</p>
           </div>
 
-          <OpponentGameboard
-            rows={row}
-            columns={column}
-            refs={ref}
-            flag={flag}
-            changeFlag={changeFlag}
-          />
-        </div>
+          <div className="gameUI">
+            <div className="turn">
+              <Alert key={alert} variant={alert}>
+                {message}
+              </Alert>
+
+              <h3>You board</h3>
+              <Gameboard
+                handleSetLose={handleSetLose}
+                rows={row}
+                columns={column}
+                refs={ref}
+                flag={flag}
+              />
+            </div>
+
+            <h3>Opponents board</h3>
+            <OpponentGameboard
+              rows={row}
+              columns={column}
+              refs={ref}
+              flag={flag}
+              changeFlag={changeFlag}
+            />
+          </div>
+        </>
       )}
     </>
   );

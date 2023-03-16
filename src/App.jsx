@@ -1,4 +1,4 @@
-import "./App.css";
+import "./Assets/scss/App.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GamePage from "./Pages/GamePage";
 import StartPage from "./Pages/StartPage";
