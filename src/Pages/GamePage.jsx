@@ -152,7 +152,6 @@ export default function GamePage() {
                 {message}
               </Alert>
 
-              <h3>You board</h3>
               <Gameboard
                 handleSetLose={handleSetLose}
                 rows={row}
@@ -162,7 +161,6 @@ export default function GamePage() {
               />
             </div>
 
-            <h3>Opponents board</h3>
             <OpponentGameboard
               rows={row}
               columns={column}

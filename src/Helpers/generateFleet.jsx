@@ -5,16 +5,12 @@ const generateFleet = (ships) => {
     for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
       initialBoard.push([]);
 
-      for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
-        initialBoard.push([]);
-
-        for (let index = 0; index < 10; index++) {
-          initialBoard[rowIndex].push({
-            hit: false,
-            ship: null,
-            coords: [index + 1, rowIndex + 1],
-          });
-        }
+      for (let index = 0; index < 10; index++) {
+        initialBoard[rowIndex].push({
+          hit: false,
+          ship: null,
+          coords: [index + 1, rowIndex + 1],
+        });
       }
     }
   };

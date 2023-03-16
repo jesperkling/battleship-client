@@ -10,7 +10,7 @@ import { useSocketContext } from "../Contexts/SocketContext";
 
 let lastHitPosition = null;
 
-export default function OpponentGameboard(props) {
+export default function Gameboard(props) {
   const generateBoard = useCallback(() => {
     let initialBoard = [];
 
