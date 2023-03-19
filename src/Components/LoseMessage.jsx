@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function LoseMessage() {
   return (
-    <Alert variant="warning">
+    <Alert variant="danger">
       <h3>Sorry you lost!</h3>
       <hr />
       <Button
