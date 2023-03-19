@@ -123,13 +123,9 @@ export default function GamePage() {
 
   return (
     <>
-      <div className="text-center">
+      <div className={`text-center ${gameInProgress === true ? "d-none" : ""}`}>
         <img src={Battleship} alt="battleship" />
-        <Button
-          className={`w-auto ${gameInProgress === true ? "d-none" : ""}`}
-          disabled={waitingForGame}
-          onClick={joinGame}
-        >
+        <Button className="w-auto" disabled={waitingForGame} onClick={joinGame}>
           Join Game
         </Button>
       </div>
