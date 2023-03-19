@@ -9,6 +9,7 @@ import WinMessage from "../Components/WinMessage";
 // Style
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import Battleship from "../Assets/images/battleship icon.svg";
 
 // Context
 import { useSocketContext } from "../Contexts/SocketContext";
@@ -123,6 +124,7 @@ export default function GamePage() {
   return (
     <>
       <div className="text-center">
+        <img src={Battleship} alt="battleship" />
         <Button
           className={`w-auto ${gameInProgress === true ? "d-none" : ""}`}
           disabled={waitingForGame}
