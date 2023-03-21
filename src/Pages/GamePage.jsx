@@ -9,7 +9,7 @@ import WinMessage from "../Components/WinMessage";
 // Style
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import Battleship from "../Assets/images/battleship icon.svg";
+import Battleship from "../Assets/images/battleship-icon.svg";
 
 // Context
 import { useSocketContext } from "../Contexts/SocketContext";
