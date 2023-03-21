@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect, useRef } from "react";
 
 // Style
 import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 // Helpers
 import generateFleet from "../Helpers/generateFleet";
@@ -96,19 +95,19 @@ export default function Gameboard(props) {
       <Container className="gameboard">
         <Row className="rad">
           {props.refs.map((letter, index) => (
-            <Col className="square" key={index}>
+            <div className="square" key={index}>
               {index}
-            </Col>
+            </div>
           ))}
         </Row>
 
         {fleet[0].map((array, fleetIndex) => (
           <Row className="rad" key={fleetIndex}>
-            <Col className="square" key={fleetIndex}>
+            <div className="square" key={fleetIndex}>
               {props.columns[fleetIndex]}
-            </Col>
+            </div>
             {fleet[0][fleetIndex].map((ship, index) => (
-              <Col
+              <div
                 className="square"
                 data-coords={[index + 1, fleetIndex + 1]}
                 key={index}
@@ -129,7 +128,7 @@ export default function Gameboard(props) {
                 >
                   {index + 1 + props.columns[fleetIndex]}
                 </button>
-              </Col>
+              </div>
             ))}
           </Row>
         ))}
